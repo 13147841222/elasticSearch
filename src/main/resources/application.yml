@@ -1,0 +1,63 @@
+spring:
+  devtools:
+    restart:
+      exclude: templates/**, static/**
+  profiles:
+    active: dev
+  jpa:
+    database: MYSQL
+    # 是否显示HQL
+    show-sql: true
+    hibernate:
+      # Entity与数据库表名对应
+      naming.physical-strategy: org.hibernate.boot.model.naming.PhysicalNamingStrategyStandardImpl
+    properties:
+      javax:
+        persistence:
+          sharedCache:
+            mode: ENABLE_SELECTIVE
+      hibernate:
+        # 数据库方言
+        dialect: org.hibernate.dialect.MySQL5Dialect
+        # 是否显示统计信息
+        generate_statistics: flase
+        # Hibernate二级缓存和Query缓存
+        cache:
+          # 二级缓存
+          use_second_level_cache: true
+          # Query 缓存
+          use_query_cache: true
+          region:
+            # 使用Ehcache
+            factory_class: org.hibernate.cache.ehcache.SingletonEhCacheRegionFactory
+        # Spring Boot 整合Hibernate
+        current_session_context_class: org.springframework.orm.hibernate5.SpringSessionContext
+
+  jackson:
+    default-property-inclusion: non_null
+  #thymeleaf
+  thymeleaf:
+    mode: HTML
+    suffix: .html
+    prefix: classpath:/templates/
+  #session会话存储类型
+  session:
+    store-type: hash_map
+
+
+logging:
+  level:
+    org:
+      hibernate:
+        SQL: debug
+
+
+#关闭HTTP基本验证
+security:
+  basic:
+    enabled: false
+
+server:
+  error:
+    whitelabel:
+      enabled: false

@@ -1,0 +1,19 @@
+spring:
+  datasource:
+    driver-class-name: com.mysql.jdbc.Driver
+    username: root
+    password: 123456
+    url: jdbc:mysql://127.0.0.1/xunwu?characterEncoding=utf-8&useSSL=false
+  thymeleaf:
+    cache: false
+  #multipart config
+  http:
+    multipart:
+      enabled: true
+      location: /Users/zhumingli/IdeaProjects/demo/tmp/
+      file-size-threshold: 5MB
+      max-request-size: 20MB
+fileupload:
+  path: /Users/zhumingli/IdeaProjects/demo/tmp/
+
+
