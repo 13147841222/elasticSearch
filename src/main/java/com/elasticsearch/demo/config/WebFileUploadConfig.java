@@ -1,6 +1,12 @@
 package com.elasticsearch.demo.config;
 
+import com.google.gson.Gson;
+import com.qiniu.common.Zone;
+import com.qiniu.storage.BucketManager;
+import com.qiniu.storage.UploadManager;
+import com.qiniu.util.Auth;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnClass;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnMissingBean;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
@@ -53,4 +59,48 @@ public class WebFileUploadConfig {
     }
 
 
+    /**
+     * 华东机房
+     * @return
+     */
+    @Bean
+    public com.qiniu.storage.Configuration qiniuConfig(){
+        return new com.qiniu.storage.Configuration(Zone.zone0());
+    }
+
+
+    /**
+     * 构建一个七牛上传工具
+     * @return
+     */
+    @Bean
+    public UploadManager uploadManager(){
+        return new UploadManager(qiniuConfig());
+    }
+
+    @Value("${qiniu.AccessKey}")
+    public String accessKey;
+
+    @Value("${qiniu.SecretKey}")
+    public String secretKey;
+
+    /**
+     * 生成认证信息实例
+     * @return
+     */
+    @Bean
+    public Auth auth(){
+        return Auth.create(accessKey,secretKey);
+    }
+
+
+    @Bean
+    public BucketManager bucketManager(){
+        return new BucketManager(auth(),qiniuConfig());
+    }
+
+    @Bean
+    public Gson gson(){
+        return new Gson();
+    }
 }

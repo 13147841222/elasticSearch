@@ -61,3 +61,12 @@ server:
   error:
     whitelabel:
       enabled: false
+
+
+#qiniu
+qiniu:
+  AccessKey: hACZr9SVm1skGkWNYJW4tXbdBw2Ae03uuaGyysyA
+  SecretKey: eE3nabE5p8Et2_XT8TNTVhZ3VLd0t4n8S6uXbXxM
+  Bucket: bestzhu
+  cdn:
+    prefix: pe4jarqs1.bkt.clouddn.com

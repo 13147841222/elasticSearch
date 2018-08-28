@@ -3,6 +3,11 @@ package com.elasticsearch.demo.web.controller.admin;
 import com.elasticsearch.demo.base.ApiResponse;
 import com.elasticsearch.demo.config.FileuploadConfig;
 import com.elasticsearch.demo.emun.ApiResponseEnum;
+import com.elasticsearch.demo.service.IQiNiuService;
+import com.elasticsearch.demo.web.dto.QiNiuPutRet;
+import com.google.gson.Gson;
+import com.qiniu.common.QiniuException;
+import com.qiniu.http.Response;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.MediaType;
 import org.springframework.stereotype.Controller;
@@ -14,6 +19,7 @@ import org.springframework.web.multipart.MultipartFile;
 
 import java.io.File;
 import java.io.IOException;
+import java.io.InputStream;
 
 /**
  * @author zhumingli
@@ -22,6 +28,9 @@ import java.io.IOException;
  **/
 @Controller
 public class AdminController {
+
+    @Autowired
+    private IQiNiuService iQiNiuService;
 
     @Autowired
     private FileuploadConfig fileuploadConfig;
@@ -41,6 +50,8 @@ public class AdminController {
         return "admin/login";
     }
 
+    @Autowired
+    private Gson gson;
 
     /**
      * 添加房源
@@ -69,6 +80,26 @@ public class AdminController {
         }
         //获取文件名
         String fileName = file.getOriginalFilename();
+
+        try {
+            InputStream inputStream = file.getInputStream();
+            Response response = iQiNiuService.uploadFile(inputStream);
+            if (response.isOK()){
+                QiNiuPutRet ret = gson.fromJson(response.bodyString(), QiNiuPutRet.class);
+                return ApiResponse.ofSuccess(ret);
+            }else {
+                return ApiResponse.ofMessage(response.statusCode,response.getInfo());
+            }
+        } catch (QiniuException e){
+            e.printStackTrace();
+            Response response = e.response;
+            return ApiResponse.ofMessage(response.statusCode,response.getInfo());
+        }
+        catch (IOException e) {
+            e.printStackTrace();
+            return ApiResponse.ofStatus(ApiResponseEnum.INTERNAL_SERVER_ERROR);
+        }
+        /*
         //文件存储路径
         File target = new File(fileuploadConfig.getPath() + fileName);
 
@@ -78,8 +109,8 @@ public class AdminController {
             e.printStackTrace();
             return ApiResponse.ofStatus(ApiResponseEnum.INTERNAL_SERVER_ERROR);
         }
-
         return ApiResponse.ofSuccess(null);
+        */
 
     }
 
