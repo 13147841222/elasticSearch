@@ -1,6 +1,6 @@
 package com.elasticsearch.demo.base;
 
-import com.elasticsearch.demo.emun.ApiResponseEnum;
+import com.elasticsearch.demo.emuns.ApiResponseEnum;
 import lombok.Data;
 
 /**
@@ -41,6 +41,7 @@ public class ApiResponse {
         this.code = ApiResponseEnum.SUCCESS.getCode();
         this.message = ApiResponseEnum.SUCCESS.getMessage();
     }
+
 
     public static ApiResponse ofMessage(Integer code, String message){
         return new ApiResponse(code, message, null);

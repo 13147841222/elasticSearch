@@ -12,8 +12,14 @@ import org.springframework.web.bind.annotation.GetMapping;
 @Controller
 public class HomeController {
 
-    @GetMapping("/")
+    /**
+     * {"/","/index"} 表示兼容
+     * @param model
+     * @return
+     */
+    @GetMapping({"/","/index"})
     public String index(Model model){
+
         model.addAttribute("name","zhuml");
 
         return "index";

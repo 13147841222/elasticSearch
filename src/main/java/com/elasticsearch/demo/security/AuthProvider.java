@@ -1,6 +1,5 @@
 package com.elasticsearch.demo.security;
 
-import com.elasticsearch.demo.emun.ApiResponseEnum;
 import com.elasticsearch.demo.entity.User;
 import com.elasticsearch.demo.service.IUserService;
 import lombok.extern.slf4j.Slf4j;

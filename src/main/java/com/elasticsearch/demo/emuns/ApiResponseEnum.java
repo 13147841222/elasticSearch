@@ -1,4 +1,4 @@
-package com.elasticsearch.demo.emun;
+package com.elasticsearch.demo.emuns;
 
 /**
  * @author zhumingli
@@ -23,8 +23,9 @@ public enum  ApiResponseEnum {
 
     NOT_SUPPORTED_OPERATION(40006,"Not supported Operation"),
 
-    NOT_LOGIN(50000,"Not Login")
+    NOT_LOGIN(50000,"Not Login"),
 
+    NOT_FOUND(404,"Not Found")
     ;
 
 

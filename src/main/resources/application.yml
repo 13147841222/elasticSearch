@@ -42,7 +42,14 @@ spring:
     prefix: classpath:/templates/
   #session会话存储类型
   session:
-    store-type: hash_map
+    store-type: redis
+  redis:
+    host: 127.0.0.1
+    database: 0
+    port: 6379
+    pool:
+      min-idle: 1
+    timeout: 3000
 
 
 logging:
@@ -70,3 +77,7 @@ qiniu:
   Bucket: bestzhu
   cdn:
     prefix: pe4jarqs1.bkt.clouddn.com
+
+
+#redis config
+

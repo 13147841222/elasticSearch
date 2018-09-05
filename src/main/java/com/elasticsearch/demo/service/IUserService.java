@@ -1,6 +1,7 @@
 package com.elasticsearch.demo.service;
 
 import com.elasticsearch.demo.entity.User;
+import com.elasticsearch.demo.web.dto.UserDTO;
 
 /**
  * @author zhumingli
@@ -10,4 +11,6 @@ import com.elasticsearch.demo.entity.User;
 public interface IUserService {
 
     User findUserByName(String name);
+
+    ServiceResult<UserDTO> findById(Long adminId);
 }

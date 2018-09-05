@@ -1,6 +1,7 @@
 package com.elasticsearch.demo.config;
 
 import org.aspectj.lang.annotation.Before;
+import org.modelmapper.ModelMapper;
 import org.springframework.beans.BeansException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.context.properties.ConfigurationProperties;
@@ -79,5 +80,15 @@ public class WebMvcConfig extends WebMvcConfigurerAdapter implements Application
         thymeleafViewResolver.setTemplateEngine(templateEngine());
         thymeleafViewResolver.setCharacterEncoding("UTF-8");
         return thymeleafViewResolver;
+    }
+
+
+    /**
+     * Bean Uitl
+     * @return
+     */
+    @Bean
+    public ModelMapper modelMapper() {
+        return new ModelMapper();
     }
 }

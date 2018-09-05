@@ -5,8 +5,11 @@ import com.elasticsearch.demo.entity.User;
 import com.elasticsearch.demo.repository.RoleRepository;
 import com.elasticsearch.demo.repository.UserRepository;
 import com.elasticsearch.demo.service.IUserService;
+import com.elasticsearch.demo.service.ServiceResult;
+import com.elasticsearch.demo.web.dto.UserDTO;
 import com.sun.prism.paint.Gradient;
 import lombok.extern.slf4j.Slf4j;
+import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.authentication.DisabledException;
 import org.springframework.security.core.GrantedAuthority;
@@ -30,6 +33,10 @@ public class IUserServiceImpl implements IUserService {
 
     @Autowired
     private RoleRepository roleRepository;
+
+    @Autowired
+    private ModelMapper modelMapper;
+
     @Override
     public User findUserByName(String name) {
         log.info("IUserServiceImpl==>findUserByName: start==> name: "+name);
@@ -47,5 +54,18 @@ public class IUserServiceImpl implements IUserService {
         user.setAuthorityList(authorityList);
         log.info("IUserServiceImpl==>findUserByName: end");
         return user;
+    }
+
+    @Override
+    public ServiceResult<UserDTO> findById(Long adminId) {
+         User user = userRepository.findOne(adminId);
+         if(user == null){
+             return ServiceResult.notFound();
+         }
+         UserDTO userDTO = modelMapper.map(user, UserDTO.class);
+
+
+
+        return ServiceResult.of(userDTO);
     }
 }
