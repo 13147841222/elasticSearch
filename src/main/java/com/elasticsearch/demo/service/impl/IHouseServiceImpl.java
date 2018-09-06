@@ -9,6 +9,7 @@ import com.elasticsearch.demo.service.IHouseService;
 import com.elasticsearch.demo.service.IQiNiuService;
 import com.elasticsearch.demo.service.ServiceMultiResult;
 import com.elasticsearch.demo.service.ServiceResult;
+import com.elasticsearch.demo.service.search.ISearchService;
 import com.elasticsearch.demo.web.dto.HouseDTO;
 import com.elasticsearch.demo.web.dto.HouseDetailDTO;
 import com.elasticsearch.demo.web.dto.HousePictureDTO;
@@ -69,6 +70,9 @@ public class IHouseServiceImpl implements IHouseService {
 
     @Autowired
     private IQiNiuService iQiNiuService;
+
+    @Autowired
+    private ISearchService searchService;
 
     @Value("${qiniu.cdn.prefix}")
     private String cdnPrefix;
@@ -256,6 +260,10 @@ public class IHouseServiceImpl implements IHouseService {
         house.setLastUpdateTime(new Date());
         houseRepository.save(house);
 
+        if (house.getStatus() == HouseStatusEnum.PASSES.getCode()) {
+            boolean flag = searchService.index(house.getId());
+        }
+
         return ServiceResult.success();
     }
 
@@ -322,6 +330,14 @@ public class IHouseServiceImpl implements IHouseService {
 
         houseRepository.updateStatus(houseId,status);
 
+        /**
+         * 上架更新索引 其他情况 删除索引
+         */
+        if (status == HouseStatusEnum.PASSES.getCode()){
+            searchService.index(houseId);
+        }else {
+            searchService.remove(houseId);
+        }
         return ServiceResult.success();
     }
 
