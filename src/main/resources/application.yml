@@ -50,7 +50,11 @@ spring:
     pool:
       min-idle: 1
     timeout: 3000
-
+  ##kafa
+  kafka:
+    bootstrap-servers:
+    consumer:
+      group-id: xunwu
 
 logging:
   level:

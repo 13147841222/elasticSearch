@@ -261,7 +261,7 @@ public class IHouseServiceImpl implements IHouseService {
         houseRepository.save(house);
 
         if (house.getStatus() == HouseStatusEnum.PASSES.getCode()) {
-            boolean flag = searchService.index(house.getId());
+            searchService.index(house.getId());
         }
 
         return ServiceResult.success();

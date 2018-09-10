@@ -9,7 +9,14 @@ public enum IndexEnum {
 
     INDEX_NAME("xunwu"),
 
-    INDEX_TYPE("house")
+    INDEX_TYPE("house"),
+
+    INDEX_TOPIC("house_build"),
+
+    INDEX("index"),
+
+    REMOVE("remove")
+
     ;
 
     private String value;
