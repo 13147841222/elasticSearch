@@ -33,10 +33,9 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import javax.persistence.criteria.Predicate;
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.List;
-import java.util.Map;
+
+import java.util.*;
+
 
 /**
  * @author zhumingli
@@ -73,6 +72,8 @@ public class IHouseServiceImpl implements IHouseService {
 
     @Autowired
     private ISearchService searchService;
+
+
 
     @Value("${qiniu.cdn.prefix}")
     private String cdnPrefix;
@@ -347,13 +348,27 @@ public class IHouseServiceImpl implements IHouseService {
          *
         Sort sort = new Sort(Sort.Direction.DESC,"lastUpdateTime");
          */
+        if (rentSearch.getKeywords() != null && !rentSearch.getKeywords().isEmpty()){
+            ServiceMultiResult<Long> serviceMultiResult = searchService.query(rentSearch);
+            if (serviceMultiResult.getTotal() == 0) {
+                return new ServiceMultiResult<>(0, new ArrayList<>());
+            }
+
+            return new ServiceMultiResult<>(serviceMultiResult.getTotal(), wrapperHouseResult(serviceMultiResult.getResult()));
+
+        }
+
+        return simpleQuery(rentSearch);
+    }
+
+    private ServiceMultiResult<HouseDTO> simpleQuery(RentSearch rentSearch){
         Sort sort = HouseSort.generateSort(rentSearch.getOrderBy(), rentSearch.getOrderDirection());
         int page = rentSearch.getStart() / rentSearch.getSize();
 
         Pageable pageable = new PageRequest(page,rentSearch.getSize(),sort);
 
         Specification<House> specification = (root,criteriaQuery, criteriaBuilder)->{
-          Predicate predicate = criteriaBuilder.equal(root.get("status"), HouseStatusEnum.PASSES.getCode());
+            Predicate predicate = criteriaBuilder.equal(root.get("status"), HouseStatusEnum.PASSES.getCode());
             predicate = criteriaBuilder.and(predicate, criteriaBuilder.equal(root.get("cityEnName"),rentSearch.getCityEnName()));
             if(HouseSort.DISTANCE_TO_SUBWAY_KEY.equals(rentSearch.getOrderBy()) ){
                 predicate = criteriaBuilder.and(predicate, criteriaBuilder.gt(root.get(HouseSort.DISTANCE_TO_SUBWAY_KEY), -1));
@@ -378,7 +393,6 @@ public class IHouseServiceImpl implements IHouseService {
 
         return new ServiceMultiResult<>(housePage.getTotalElements(), houseDTOs);
     }
-
     /**
      * 渲染详细信息
      * @param houseIds
@@ -448,5 +462,27 @@ public class IHouseServiceImpl implements IHouseService {
 
 
         return pictureList;
+    }
+
+    private List<HouseDTO> wrapperHouseResult(List<Long> houseIds){
+        List<HouseDTO> result = new ArrayList<>();
+
+        Map<Long, HouseDTO> idToHouseMap = new HashMap<>();
+        java.lang.Iterable<House> houseIterator = houseRepository.findAll(houseIds);
+
+        houseIterator.forEach(e ->{
+            HouseDTO houseDTO = modelMapper.map(e, HouseDTO.class);
+            houseDTO.setCover(this.cdnPrefix + e.getCover());
+            idToHouseMap.put(houseDTO.getId(), houseDTO);
+        });
+
+        wrapperHosueList(houseIds,idToHouseMap);
+
+        //矫正顺序
+        for(Long houseId : houseIds) {
+            result.add(idToHouseMap.get(houseId));
+        }
+
+        return result;
     }
 }

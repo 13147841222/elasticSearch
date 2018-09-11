@@ -43,6 +43,8 @@ spring:
   #session会话存储类型
   session:
     store-type: redis
+
+  #redis config
   redis:
     host: 127.0.0.1
     database: 0
@@ -52,7 +54,7 @@ spring:
     timeout: 3000
   ##kafa
   kafka:
-    bootstrap-servers:
+    bootstrap-servers: 120.0.0.1:9092
     consumer:
       group-id: xunwu
 
@@ -83,5 +85,5 @@ qiniu:
     prefix: pe4jarqs1.bkt.clouddn.com
 
 
-#redis config
 
+l
