@@ -1,7 +1,7 @@
 package com.elasticsearch.demo.web.dto;
 
 /**
- * Created by 瓦力.
+ * Created by zhuml.
  */
 public class HouseDetailDTO {
     private String description;

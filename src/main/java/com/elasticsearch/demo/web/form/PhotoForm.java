@@ -1,7 +1,7 @@
 package com.elasticsearch.demo.web.form;
 
 /**
- * Created by 瓦力.
+ * Created by zhuml.
  */
 public class PhotoForm {
     private String path;

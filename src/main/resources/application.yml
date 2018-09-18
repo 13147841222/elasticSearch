@@ -63,8 +63,8 @@ logging:
     org:
       hibernate:
         SQL: debug
-
-
+  pattern:
+    level: debug
 #关闭HTTP基本验证
 security:
   basic:
@@ -86,4 +86,3 @@ qiniu:
 
 
 
-l

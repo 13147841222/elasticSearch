@@ -3,7 +3,7 @@ package com.elasticsearch.demo.web.dto;
 import com.fasterxml.jackson.annotation.JsonProperty;
 
 /**
- * Created by 瓦力.
+ * Created by zhuml.
  */
 public class HousePictureDTO {
     private Long id;

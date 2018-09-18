@@ -1,8 +1,10 @@
 package com.elasticsearch.demo.web.form;
 
+
 /**
- * Created by 瓦力.
+ * @author zhumingli
  */
+
 public class MapSearch {
     private String cityEnName;
 

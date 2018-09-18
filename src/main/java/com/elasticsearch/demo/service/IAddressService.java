@@ -2,6 +2,7 @@ package com.elasticsearch.demo.service;
 
 import com.elasticsearch.demo.emuns.LevelEnum;
 import com.elasticsearch.demo.entity.SupportAddress;
+import com.elasticsearch.demo.service.search.BaiduMapLocation;
 import com.elasticsearch.demo.web.dto.SubwayDTO;
 import com.elasticsearch.demo.web.dto.SubwayStationDTO;
 import com.elasticsearch.demo.web.dto.SupportAddressDTO;
@@ -73,5 +74,8 @@ public interface IAddressService {
     ServiceResult<SupportAddressDTO> findCity(String cityEnName);
 
 
-
+    /**
+     * 根据城市以及具体地理位置获取百度地图的经纬度
+     */
+    ServiceResult<BaiduMapLocation> getBaiduMapLocation(String city, String address);
 }

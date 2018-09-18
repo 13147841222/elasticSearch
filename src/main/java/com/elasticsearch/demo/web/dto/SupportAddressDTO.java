@@ -34,4 +34,10 @@ public class SupportAddressDTO {
      * 行政级别
      */
     private String level;
+
+
+    private double baiduMapLongtitue;
+
+
+    private double baiduMapLatitude;
 }

@@ -2,7 +2,7 @@ package com.elasticsearch.demo.web.form;
 
 /**
  * 租房请求参数结构体
- * Created by 瓦力.
+ * Created by zhuml.
  */
 public class RentSearch {
     private String cityEnName;

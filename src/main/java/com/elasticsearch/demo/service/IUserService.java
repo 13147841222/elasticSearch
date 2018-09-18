@@ -13,4 +13,6 @@ public interface IUserService {
     User findUserByName(String name);
 
     ServiceResult<UserDTO> findById(Long adminId);
+
+
 }

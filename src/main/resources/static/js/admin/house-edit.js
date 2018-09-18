@@ -1,5 +1,5 @@
 /**
- * Created by 瓦力.
+ * Created by zhuml.
  */
 $(function () {
     var $city = $("#city"),

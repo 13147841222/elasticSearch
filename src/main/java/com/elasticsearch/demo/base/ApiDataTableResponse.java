@@ -2,6 +2,7 @@ package com.elasticsearch.demo.base;
 
 import com.elasticsearch.demo.emuns.ApiResponseEnum;
 import lombok.Data;
+import lombok.EqualsAndHashCode;
 
 /**
  * @author zhumingli
@@ -9,6 +10,7 @@ import lombok.Data;
  * @desc
  **/
 @Data
+@EqualsAndHashCode(callSuper = false)
 public class ApiDataTableResponse extends ApiResponse{
 
     private int draw;

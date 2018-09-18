@@ -6,7 +6,9 @@ import com.elasticsearch.demo.emuns.ApiResponseEnum;
 import com.elasticsearch.demo.emuns.LevelEnum;
 import com.elasticsearch.demo.entity.SupportAddress;
 import com.elasticsearch.demo.service.*;
+import com.elasticsearch.demo.service.search.ISearchService;
 import com.elasticsearch.demo.web.dto.*;
+import com.elasticsearch.demo.web.form.MapSearch;
 import com.elasticsearch.demo.web.form.RentSearch;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
@@ -15,6 +17,7 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import javax.servlet.http.HttpSession;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
@@ -35,6 +38,24 @@ public class HouseController {
 
     @Autowired
     private IUserService userService;
+
+    @Autowired
+    private ISearchService searchService;
+
+    @GetMapping("rent/house/autoComplete")
+    public ApiResponse autoComplete(@RequestParam(value = "prefix") String prefix ){
+        if (prefix.isEmpty()){
+            return ApiResponse.ofStatus(ApiResponseEnum.BAD_REQUEST);
+        }
+
+        List<String> result = new ArrayList<>();
+
+        ServiceResult<List<String>> serviceResult = searchService.suggest(prefix);
+
+
+        return ApiResponse.ofSuccess(serviceResult);
+    }
+
 
     @GetMapping("address/support/cities")
     @ResponseBody
@@ -171,8 +192,42 @@ public class HouseController {
         }
         model.addAttribute("agent",userDTOServiceResult.getResult());
 
-        model.addAttribute("houseCountInDistrict", 0);
+        ServiceResult<Long> serviceResult = searchService.aggregateDistrictHouse(city.getEnName(),region.getEnName(),houseDTO.getDistrict());
+        model.addAttribute("houseCountInDistrict", serviceResult.getResult());
 
         return "house-detail";
     }
+
+    @GetMapping("rent/house/map")
+    public String rentMappage(@RequestParam(value = "cityEnName") String cityEnName,
+                              Model model,
+                              HttpSession session,
+                              RedirectAttributes redirectAttributes){
+        ServiceResult<SupportAddressDTO> cityResult = iAddressService.findCity(cityEnName);
+        if (!cityResult.isSuccess()){
+            return "redirect:/index";
+        }else {
+            session.setAttribute("cityEnName",cityEnName);
+            model.addAttribute("city",cityResult.getResult());
+        }
+
+        ServiceMultiResult regionsResult = iAddressService.findAllRegionsByCityName(cityEnName);
+
+        ServiceMultiResult<HouseBucketDTO> bucketDTOs = searchService.mapAggregate(cityEnName);
+
+        model.addAttribute("aggData", bucketDTOs.getResult());
+        model.addAttribute("total", bucketDTOs.getTotal());
+        model.addAttribute("regions", regionsResult.getResult());
+
+        return "rent-map";
+    }
+
+    @GetMapping("rent/house/map/housees")
+    @ResponseBody
+    public ApiResponse rentMapHouse(@ModelAttribute MapSearch mapSearch){
+
+
+        return new ApiResponse();
+    }
+
 }

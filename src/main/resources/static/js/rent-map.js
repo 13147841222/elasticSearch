@@ -1,5 +1,5 @@
 /**
- * Created by 瓦力.
+ * Created by zhuml.
  */
 var regionCountMap = {}, // 地区数据
     labels = [], // 标签列表

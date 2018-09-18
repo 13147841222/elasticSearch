@@ -11,7 +11,7 @@ import javax.persistence.Table;
 
 /**
  * 预约看房实体类
- * Created by 瓦力.
+ * Created by zhuml.
  */
 public class HouseSubscribeDTO {
     private Long id;
