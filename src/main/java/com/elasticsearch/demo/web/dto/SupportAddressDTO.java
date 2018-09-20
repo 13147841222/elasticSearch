@@ -36,7 +36,7 @@ public class SupportAddressDTO {
     private String level;
 
 
-    private double baiduMapLongtitue;
+    private double baiduMapLongitude;
 
 
     private double baiduMapLatitude;

@@ -42,7 +42,7 @@ public class SupportAddress {
     private String level;
 
     @Column(name = "baidu_map_lng")
-    private double baiduMapLongtitue;
+    private double baiduMapLongitude;
 
     @Column(name = "baidu_map_lat")
     private double baiduMapLatitude;
