@@ -3,6 +3,7 @@ package com.elasticsearch.demo.service;
 import com.elasticsearch.demo.web.dto.HouseDTO;
 import com.elasticsearch.demo.web.form.DatatableSearch;
 import com.elasticsearch.demo.web.form.HouseForm;
+import com.elasticsearch.demo.web.form.MapSearch;
 import com.elasticsearch.demo.web.form.RentSearch;
 
 /**
@@ -79,4 +80,17 @@ public interface IHouseService {
      */
     ServiceMultiResult<HouseDTO> query(RentSearch rentSearch);
 
+    /**
+     * 全地图查询
+     * @param mapSearch
+     * @return
+     */
+    ServiceMultiResult<HouseDTO>  wholeMapQuery(MapSearch mapSearch);
+
+    /**
+     * 精确范围数据查询
+     * @param mapSearch
+     * @return
+     */
+    ServiceMultiResult<HouseDTO> boundMapQuery(MapSearch mapSearch);
 }

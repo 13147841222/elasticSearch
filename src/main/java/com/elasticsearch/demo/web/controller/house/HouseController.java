@@ -11,6 +11,7 @@ import com.elasticsearch.demo.web.dto.*;
 import com.elasticsearch.demo.web.form.MapSearch;
 import com.elasticsearch.demo.web.form.RentSearch;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
@@ -222,12 +223,22 @@ public class HouseController {
         return "rent-map";
     }
 
-    @GetMapping("rent/house/map/housees")
+    @GetMapping("rent/house/map/houses")
     @ResponseBody
     public ApiResponse rentMapHouse(@ModelAttribute MapSearch mapSearch){
 
-
-        return new ApiResponse();
+        if (mapSearch.getCityEnName() == null){
+            return ApiResponse.ofStatus(ApiResponseEnum.BAD_REQUEST);
+        }
+        ServiceMultiResult<HouseDTO>  serviceMultiResult;
+        if (mapSearch.getLevel() < 13){
+            serviceMultiResult = iHouseService.wholeMapQuery(mapSearch);
+        }else {
+            serviceMultiResult = iHouseService.boundMapQuery(mapSearch);
+        }
+        ApiResponse apiResponse = ApiResponse.ofSuccess(serviceMultiResult.getResult());
+        apiResponse.setMore(serviceMultiResult.getTotal() > (mapSearch.getStart() + mapSearch.getSize()));
+        return apiResponse;
     }
 
 }

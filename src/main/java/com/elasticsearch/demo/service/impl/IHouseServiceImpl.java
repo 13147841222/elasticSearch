@@ -13,10 +13,7 @@ import com.elasticsearch.demo.service.search.ISearchService;
 import com.elasticsearch.demo.web.dto.HouseDTO;
 import com.elasticsearch.demo.web.dto.HouseDetailDTO;
 import com.elasticsearch.demo.web.dto.HousePictureDTO;
-import com.elasticsearch.demo.web.form.DatatableSearch;
-import com.elasticsearch.demo.web.form.HouseForm;
-import com.elasticsearch.demo.web.form.PhotoForm;
-import com.elasticsearch.demo.web.form.RentSearch;
+import com.elasticsearch.demo.web.form.*;
 import com.google.common.collect.Maps;
 import com.qiniu.common.QiniuException;
 import com.qiniu.http.Response;
@@ -359,6 +356,34 @@ public class IHouseServiceImpl implements IHouseService {
         }
 
         return simpleQuery(rentSearch);
+    }
+
+    @Override
+    public ServiceMultiResult<HouseDTO> wholeMapQuery(MapSearch mapSearch) {
+        ServiceMultiResult<Long> longServiceMultiResult = searchService.mapQuery(mapSearch.getCityEnName(), mapSearch.getOrderBy(), mapSearch.getOrderDirection(), mapSearch.getStart(), mapSearch.getSize());
+
+        if (longServiceMultiResult.getTotal() == 0) {
+            return new ServiceMultiResult<>(0, new ArrayList<>());
+        }
+
+        List<HouseDTO> house =  wrapperHouseResult(longServiceMultiResult.getResult());
+
+
+        return new ServiceMultiResult<>(longServiceMultiResult.getTotal(), house);
+    }
+
+    @Override
+    public ServiceMultiResult<HouseDTO> boundMapQuery(MapSearch mapSearch) {
+
+        ServiceMultiResult<Long> serviceMultiResult = searchService.mapQuery(mapSearch);
+
+        if (serviceMultiResult.getTotal() == 0) {
+            return new ServiceMultiResult<>(0, new ArrayList<>());
+        }
+
+        List<HouseDTO> house =  wrapperHouseResult(serviceMultiResult.getResult());
+
+        return new ServiceMultiResult<>(serviceMultiResult.getTotal(), house);
     }
 
     private ServiceMultiResult<HouseDTO> simpleQuery(RentSearch rentSearch){

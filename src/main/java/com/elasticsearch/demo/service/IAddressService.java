@@ -78,4 +78,17 @@ public interface IAddressService {
      * 根据城市以及具体地理位置获取百度地图的经纬度
      */
     ServiceResult<BaiduMapLocation> getBaiduMapLocation(String city, String address);
+
+    /**
+     * 上传百度LBS数据
+     * @return
+     */
+    ServiceResult lbsUpload(BaiduMapLocation location, String title, String address, Long houseId, int price, int area);
+
+    /**
+     * 移除LBS数据
+     * @param houseId
+     * @return
+     */
+    ServiceResult removeLbs(Long houseId);
 }

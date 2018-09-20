@@ -3,6 +3,7 @@ package com.elasticsearch.demo.service.search;
 import com.elasticsearch.demo.service.ServiceMultiResult;
 import com.elasticsearch.demo.service.ServiceResult;
 import com.elasticsearch.demo.web.dto.HouseBucketDTO;
+import com.elasticsearch.demo.web.form.MapSearch;
 import com.elasticsearch.demo.web.form.RentSearch;
 
 import java.util.List;
@@ -56,4 +57,22 @@ public interface ISearchService {
      * @return
      */
     ServiceMultiResult<HouseBucketDTO> mapAggregate(String cityEnName);
+
+    /**
+     * 查询城市疾病
+     * @param cityEnName
+     * @param orderBy
+     * @param orderDirection
+     * @param start
+     * @param size
+     * @return
+     */
+    ServiceMultiResult<Long> mapQuery(String cityEnName, String orderBy, String orderDirection, int start, int size);
+
+    /**
+     * 精确查询城市疾病
+     * @param mapSearch
+     * @return
+     */
+    ServiceMultiResult<Long> mapQuery(MapSearch mapSearch);
 }
