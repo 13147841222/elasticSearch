@@ -84,5 +84,11 @@ qiniu:
   cdn:
     prefix: pe4jarqs1.bkt.clouddn.com
 
+aliyun:
+  sms:
+    accesskey:
+    accesskeySecret:
+    template:
+      code:
 
 

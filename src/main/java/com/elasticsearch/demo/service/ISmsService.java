@@ -20,12 +20,12 @@ public interface ISmsService {
      * @param telephone
      * @return
      */
-    ServiceResult<String> getSmsCode(String telephone);
+    String getSmsCode(String telephone);
 
     /**
      * 移除指定手机号的验证码缓存
      * @param telephone
      * @return
      */
-    ServiceResult<String> removeSms(String telephone);
+    void removeSms(String telephone);
 }

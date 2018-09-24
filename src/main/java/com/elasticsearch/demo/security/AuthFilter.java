@@ -47,7 +47,7 @@ public class AuthFilter extends UsernamePasswordAuthenticationFilter {
 
         String inputCode = request.getParameter("smsCode");
 
-        String sessionCode = smsService.getSmsCode(inputCode).getResult();
+        String sessionCode = smsService.getSmsCode(inputCode);
 
         if (Objects.equals(inputCode, sessionCode)){
 
