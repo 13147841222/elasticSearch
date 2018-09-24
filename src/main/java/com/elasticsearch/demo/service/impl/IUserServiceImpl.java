@@ -7,7 +7,9 @@ import com.elasticsearch.demo.repository.UserRepository;
 import com.elasticsearch.demo.service.IUserService;
 import com.elasticsearch.demo.service.ServiceResult;
 import com.elasticsearch.demo.web.dto.UserDTO;
+import com.google.common.collect.Lists;
 import com.sun.prism.paint.Gradient;
+import lombok.Data;
 import lombok.extern.slf4j.Slf4j;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -15,8 +17,10 @@ import org.springframework.security.authentication.DisabledException;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 
 /**
@@ -67,5 +71,41 @@ public class IUserServiceImpl implements IUserService {
 
 
         return ServiceResult.of(userDTO);
+    }
+
+    @Override
+    public User findUserByTelephone(String telephone) {
+        User user = userRepository.findUserByPhoneNumber(telephone);
+        if (user == null) {
+            return null;
+        }
+        List<Role> roleList = roleRepository.findRolesByUserId(user.getId());
+        if (roleList.isEmpty() || roleList == null) {
+            throw new DisabledException("权限非法");
+        }
+
+        List<GrantedAuthority> authorities = new ArrayList<>();
+        roleList.forEach(role -> authorities.add(new SimpleGrantedAuthority("ROLE_" + role.getName())));
+        user.setAuthorityList(authorities);
+        return user;
+    }
+
+    @Override
+    @Transactional
+    public User addUserByPhone(String telephone) {
+        User user = new User();
+        user.setPhoneNumber(telephone);
+        user.setName(telephone.substring(0,3) + "****" + telephone.substring(7,11));
+        Date date = new Date();
+        user.setCreateTime(date);
+        user.setLastLoginTime(date);
+        user.setLastUpdateTime(date);
+        User result = userRepository.save(user);
+        Role role = new Role();
+        role.setName("USER");
+        role.setUserId(result.getId());
+        roleRepository.save(role);
+        result.setAuthorityList(Lists.newArrayList(new SimpleGrantedAuthority("ROLE_USER")));
+        return result;
     }
 }

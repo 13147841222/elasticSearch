@@ -1,16 +1,19 @@
 package com.elasticsearch.demo.config;
 
+import com.elasticsearch.demo.security.AuthFilter;
 import com.elasticsearch.demo.security.AuthProvider;
 import com.elasticsearch.demo.security.LoginAuthFailHandler;
 import com.elasticsearch.demo.security.LoginUrlEntryPoint;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
 import org.springframework.security.config.annotation.method.configuration.EnableGlobalMethodSecurity;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
+import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 
 /**
  * @author zhumingli
@@ -30,6 +33,8 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
      */
     @Override
     protected void configure(HttpSecurity http) throws Exception {
+        http.addFilterBefore(authFilter(), UsernamePasswordAuthenticationFilter.class);
+
         // 资源访问权限
         http.authorizeRequests()
                 // 管理员登陆入口
@@ -95,4 +100,26 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
     public LoginAuthFailHandler authFailHandler(){
         return new LoginAuthFailHandler(loginUrlEntryPoint());
     }
+
+    @Override
+    @Bean
+    public AuthenticationManager authenticationManager(){
+        AuthenticationManager authenticationManager = null;
+        try {
+            authenticationManager = super.authenticationManager();
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return authenticationManager;
+    }
+
+    @Bean
+    public AuthFilter authFilter(){
+        AuthFilter authFilter = new AuthFilter();
+        authFilter.setAuthenticationManager(authenticationManager());
+        authFilter.setAuthenticationFailureHandler(authFailHandler());
+        return authFilter;
+    }
+
+
 }
