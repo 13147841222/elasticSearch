@@ -1,5 +1,6 @@
 package com.elasticsearch.demo.service.impl;
 
+import com.elasticsearch.demo.base.LoginUserUtil;
 import com.elasticsearch.demo.entity.Role;
 import com.elasticsearch.demo.entity.User;
 import com.elasticsearch.demo.repository.RoleRepository;
@@ -14,6 +15,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.authentication.DisabledException;
+import org.springframework.security.authentication.encoding.Md5PasswordEncoder;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.stereotype.Service;
@@ -40,6 +42,8 @@ public class IUserServiceImpl implements IUserService {
 
     @Autowired
     private ModelMapper modelMapper;
+
+    private final Md5PasswordEncoder md5PasswordEncoder = new Md5PasswordEncoder();
 
     @Override
     public User findUserByName(String name) {
@@ -107,5 +111,24 @@ public class IUserServiceImpl implements IUserService {
         roleRepository.save(role);
         result.setAuthorityList(Lists.newArrayList(new SimpleGrantedAuthority("ROLE_USER")));
         return result;
+    }
+
+    @Override
+    public ServiceResult modifyUserProfile(String profile, String value) {
+        Long id = LoginUserUtil.getLoginUserId();
+        switch (profile) {
+            case "name":
+                userRepository.updateUsername(id,value);
+                break;
+            case "email":
+                userRepository.updateEmail(id,value);
+                break;
+            case "password":
+                userRepository.updatePassword(id,md5PasswordEncoder.encodePassword(value, id));
+                break;
+            default:
+                return new ServiceResult(false,"修改失败");
+        }
+        return ServiceResult.success();
     }
 }
