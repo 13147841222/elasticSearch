@@ -1,10 +1,18 @@
 package com.elasticsearch.demo.service;
 
+import com.elasticsearch.demo.emuns.HouseSubscribeStatusEnum;
+import com.elasticsearch.demo.entity.House;
+import com.elasticsearch.demo.entity.HouseSubscribe;
+import com.elasticsearch.demo.repository.HouseSubscribeRepository;
 import com.elasticsearch.demo.web.dto.HouseDTO;
+import com.elasticsearch.demo.web.dto.HouseSubscribeDTO;
 import com.elasticsearch.demo.web.form.DatatableSearch;
 import com.elasticsearch.demo.web.form.HouseForm;
 import com.elasticsearch.demo.web.form.MapSearch;
 import com.elasticsearch.demo.web.form.RentSearch;
+import org.springframework.data.util.Pair;
+
+import java.util.Date;
 
 /**
  * @author zhumingli
@@ -93,4 +101,31 @@ public interface IHouseService {
      * @return
      */
     ServiceMultiResult<HouseDTO> boundMapQuery(MapSearch mapSearch);
+
+    /**
+     * 加入预约清单
+     * @param houseId
+     * @return
+     */
+    ServiceResult addSubscribeOrder(Long houseId);
+
+    /**
+     * @param status
+     * @param start
+     * @param size
+     * @return
+     */
+    ServiceMultiResult<Pair<HouseDTO, HouseSubscribeDTO>> querySubscribeList(HouseSubscribeStatusEnum status, int start, int size);
+
+    /**
+     *
+     * @param houseId
+     * @param orderTime
+     * @param telephone
+     * @param desc
+     * @return
+     */
+    ServiceResult subscribe(Long houseId, Date orderTime, String telephone, String desc);
+
+    ServiceResult cancelSubscribe(Long houseId);
 }
