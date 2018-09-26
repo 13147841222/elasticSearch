@@ -118,7 +118,7 @@ public interface IHouseService {
     ServiceMultiResult<Pair<HouseDTO, HouseSubscribeDTO>> querySubscribeList(HouseSubscribeStatusEnum status, int start, int size);
 
     /**
-     *
+     * 创建预约
      * @param houseId
      * @param orderTime
      * @param telephone
@@ -127,5 +127,25 @@ public interface IHouseService {
      */
     ServiceResult subscribe(Long houseId, Date orderTime, String telephone, String desc);
 
+    /**
+     * 取消预约
+     * @param houseId
+     * @return
+     */
     ServiceResult cancelSubscribe(Long houseId);
+
+    /**
+     * 管理员查询预约列表
+     * @param start
+     * @param size
+     * @return
+     */
+    ServiceMultiResult<Pair<HouseDTO, HouseSubscribeDTO>> findSubscribeList(int start, int size);
+
+    /**
+     * 完成预约
+     * @param houseId
+     * @return
+     */
+    ServiceResult finishSubscribe(Long houseId);
 }

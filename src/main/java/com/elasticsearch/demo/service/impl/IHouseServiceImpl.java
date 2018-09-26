@@ -466,6 +466,35 @@ public class IHouseServiceImpl implements IHouseService {
         return ServiceResult.success();
     }
 
+    @Override
+    public ServiceMultiResult<Pair<HouseDTO, HouseSubscribeDTO>> findSubscribeList(int start, int size) {
+
+        Long userId = LoginUserUtil.getLoginUserId();
+        Pageable pageable = new PageRequest(size / size, size, new Sort(Sort.Direction.DESC,"orderTime"));
+
+        Page<HouseSubscribe> page = houseSubscribeRepository.findAllByAdminIdAndStstus(userId,HouseSubscribeStatusEnum.IN_ORDER_TIME, pageable);
+
+        return wrapper(page);
+    }
+
+    @Override
+    @Transactional
+    public ServiceResult finishSubscribe(Long houseId) {
+        Long adminId = LoginUserUtil.getLoginUserId();
+        HouseSubscribe houseSubscribe = houseSubscribeRepository.findAllByAdminIdAndHouseId( adminId,houseId);
+
+        if(houseSubscribe == null) {
+            return new ServiceResult(false, "无预约记录");
+        }
+
+        houseSubscribeRepository.updateStatus(houseSubscribe.getId(), HouseSubscribeStatusEnum.FINISH.getValue() );
+
+        houseRepository.updateWatchTimes(houseId);
+
+
+        return ServiceResult.success();
+    }
+
     private ServiceMultiResult<Pair<HouseDTO, HouseSubscribeDTO>> wrapper(Page<HouseSubscribe> page){
         List<Pair<HouseDTO, HouseSubscribeDTO>> result = new ArrayList<>();
 

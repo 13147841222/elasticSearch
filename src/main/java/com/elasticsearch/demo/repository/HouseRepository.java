@@ -14,11 +14,26 @@ import org.springframework.data.repository.query.Param;
  **/
 public interface HouseRepository extends PagingAndSortingRepository<House, Long> , JpaSpecificationExecutor<House> {
 
+    /**
+     * @param id
+     * @param cover
+     */
     @Modifying
     @Query("update House as house set house.cover = :cover where house.id = :id")
     void updateCover(@Param(value = "id") Long id, @Param(value = "cover") String cover);
 
+    /**
+     * @param id
+     * @param status
+     */
     @Modifying
     @Query("update House as house set house.status = :status where house.id = :id")
     void updateStatus(@Param(value = "id") Long id, @Param(value = "status") int status);
+
+    /**
+     * @param houseId
+     */
+    @Modifying
+    @Query("update House as house set house.watchTimes = house.watchTimes + 1 where house.id = :houseId")
+    void updateWatchTimes(@Param(value = "id")Long houseId);
 }

@@ -15,6 +15,7 @@ import com.google.gson.Gson;
 import com.qiniu.common.QiniuException;
 import com.qiniu.http.Response;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.util.Pair;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.stereotype.Controller;
@@ -50,6 +51,9 @@ public class AdminController {
 
     @Autowired
     private IHouseService houseService;
+
+    @Autowired
+    private IUserService userService;
 
     @GetMapping("/admin/center")
     public String adminCenterPage(){
@@ -256,4 +260,56 @@ public class AdminController {
 
         return ApiResponse.ofStatus(ApiResponseEnum.BAD_REQUEST);
     }
+
+    @GetMapping("admin/house/subscribe")
+    public String houseSubscribe() {
+        return "admin/subscribe";
+    }
+
+
+    @GetMapping("admin/house/subscribe/list")
+    @ResponseBody
+    public ApiResponse subscribeList(@RequestParam(value = "draw") int draw,
+                                     @RequestParam(value = "start") int start,
+                                     @RequestParam(value = "length") int size) {
+
+        ServiceMultiResult<Pair<HouseDTO, HouseSubscribeDTO>> result = houseService.findSubscribeList(start,size);
+        ApiDataTableResponse response = new ApiDataTableResponse(ApiResponseEnum.SUCCESS);
+        response.setData(result.getResult());
+        response.setDraw(draw);
+        response.setRecordsFiltered(result.getTotal());
+        response.setRecordsTotal(result.getTotal());
+        return response;
+    }
+
+    @GetMapping("admin/user/{userId}")
+    @ResponseBody
+    public ApiResponse getUserInfo(@PathVariable(value = "userId") Long userId){
+        if (userId == null || userId < 1 ){
+            return ApiResponse.ofStatus(ApiResponseEnum.BAD_REQUEST);
+        }
+
+        ServiceResult<UserDTO> result = userService.findById(userId);
+
+        if (!result.isSuccess()){
+            return ApiResponse.ofStatus(ApiResponseEnum.NOT_FOUND);
+        }
+        return ApiResponse.ofSuccess(result.getResult());
+    }
+
+    @PostMapping("admin/finish/subscribe")
+    @ResponseBody
+    public ApiResponse finishSubscribe(@RequestParam(value = "house_id") Long houseId){
+        if (houseId == null || houseId < 1 ){
+            return ApiResponse.ofStatus(ApiResponseEnum.BAD_REQUEST);
+        }
+
+        ServiceResult result = houseService.finishSubscribe(houseId);
+
+        if (!result.isSuccess()){
+            return ApiResponse.ofMessage(ApiResponseEnum.BAD_REQUEST.getCode(),result.getMessage());
+        }
+        return ApiResponse.ofSuccess(result.getResult());
+    }
+
 }
